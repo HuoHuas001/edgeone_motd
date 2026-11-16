@@ -29,7 +29,7 @@
 4. 创建名为 `mcmotd` 的 Pages Blob Store（或通过 `STORAGE_NAMESPACE` 指定其他名称），按需配置管理员凭据，重新部署。云端由 SDK 使用部署凭据，无需手动填存储令牌。
 5. 部署后打开首页，并分别用已知在线的 Java 和基岩服务器测试。函数地域应尽量靠近 Minecraft 服务器及存储服务。
 
-`includeFiles` 保留后端模块、配置、字体与图片的目录结构；`externalNodeModules` 保留运行依赖及原生绘图库。请勿删除这两项，也不要把本机 Windows 的 `node_modules` 上传到部署产物。
+`includeFiles` 保留后端模块、配置、字体与图片的目录结构；`externalNodeModules` 保留运行依赖及原生绘图库。配置使用当前 CLI 的 `cloudFunctions` 顶层字段。云函数入口必须显式创建并默认导出 Express 实例，不能仅通过动态 `require` 导出已有实例，否则构建器可能误判为普通函数。当前项目为 GitHub 部署类型，应提交到已关联分支触发云端 Linux 构建；CLI 不支持向该项目直接上传本机目录。
 
 ### 环境变量
 
