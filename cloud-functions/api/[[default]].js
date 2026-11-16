@@ -10,6 +10,14 @@ const { configureStorageFactory } = require('../../backend/storage/index.js');
 configureStorageFactory(() => createEdgeOneBlobStorage({ name: process.env.STORAGE_NAMESPACE || 'mcmotd' }, getStore));
 const api = require('../../backend/app.js');
 const app = express();
+app.use((req, res, next) => {
+  const publicHost = req.get('eo-pages-host');
+  if (publicHost) {
+    req.headers.host = publicHost;
+    req.headers['x-forwarded-proto'] ||= 'https';
+  }
+  next();
+});
 app.use(api);
 
 // EdgeOne mounts this Express instance under /api.
