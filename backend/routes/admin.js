@@ -10,7 +10,7 @@ router.get('/stats', async (req, res) => {
         res.json(stats);
     } catch (error) {
         console.error('获取统计数据失败:', error);
-        if (error.code === 'LIBSQL_CONFIGURATION_ERROR') {
+        if (['STORAGE_CONFIGURATION_ERROR', 'STORAGE_UNAVAILABLE'].includes(error.code)) {
             return res.status(503).json({ error: error.message, code: error.code });
         }
         res.status(500).json({ error: '无法获取统计数据。' });

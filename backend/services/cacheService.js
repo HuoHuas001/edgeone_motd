@@ -1,48 +1,22 @@
-const database = require('./database');
+const crypto = require('node:crypto');
+const { getStorage, storageEnabled } = require('../storage');
 const config = require('../config/config.json');
 
-const init = async () => {
-    if (!config.caching?.enable || !process.env.LIBSQL_URL?.trim()) {
-        return;
-    }
-    await database.init();
-};
+function cacheKey(key) {
+    return `cache/${crypto.createHash('sha256').update(key).digest('hex')}.json`;
+}
 
-const getCache = async (key, ttlSeconds) => {
-    if (!config.caching?.enable || !process.env.LIBSQL_URL?.trim()) {
-        return null;
-    }
-    const db = await database.init();
-    const result = await db.execute({
-        sql: 'SELECT data, timestamp FROM server_cache WHERE id = ?',
-        args: [key]
-    });
-    const row = result.rows[0];
-    if (!row) {
-        return null;
-    }
+async function getCache(key, ttlSeconds) {
+    if (!config.caching?.enable || !storageEnabled()) return null;
+    const row = await getStorage().getJSON(cacheKey(key));
+    if (!row || Date.now() - row.timestamp >= ttlSeconds * 1000) return null;
+    // Do not delete an expired mutable key: another instance may have just replaced it.
+    return row.data;
+}
 
-    const isExpired = (Date.now() - row.timestamp) / 1000 > ttlSeconds;
-    if (isExpired) {
-        await db.execute({
-            sql: 'DELETE FROM server_cache WHERE id = ? AND timestamp = ?',
-            args: [key, row.timestamp]
-        });
-        return null;
-    }
+async function setCache(key, value) {
+    if (!config.caching?.enable || !storageEnabled()) return;
+    await getStorage().setJSON(cacheKey(key), { data: value, timestamp: Date.now() });
+}
 
-    return JSON.parse(row.data);
-};
-
-const setCache = async (key, value) => {
-    if (!config.caching?.enable || !process.env.LIBSQL_URL?.trim()) {
-        return;
-    }
-    const db = await database.init();
-    await db.execute({
-        sql: 'REPLACE INTO server_cache (id, data, timestamp) VALUES (?, ?, ?)',
-        args: [key, JSON.stringify(value), Date.now()]
-    });
-};
-
-module.exports = { init, getCache, setCache };
+module.exports = { getCache, setCache };

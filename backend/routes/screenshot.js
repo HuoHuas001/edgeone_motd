@@ -18,10 +18,10 @@ router.get('/', async (req, res) => {
         res.setHeader('Cache-Control', 'no-store');
         return res.send(result.buffer);
     } catch (error) {
-        logger.warn('[SCREENSHOT]', '读取 COS 图片失败', error.message);
-        return res.status(error.code === 'COS_CONFIG_MISSING' ? 503 : 500).json({
+        logger.warn('[SCREENSHOT]', '读取图片失败', error.message);
+        return res.status(error.code === 'STORAGE_CONFIGURATION_ERROR' ? 503 : 500).json({
             status: 'error',
-            message: error.code === 'COS_CONFIG_MISSING' ? error.message : '读取图片失败'
+            message: error.code === 'STORAGE_CONFIGURATION_ERROR' ? error.message : '读取图片失败'
         });
     }
 });

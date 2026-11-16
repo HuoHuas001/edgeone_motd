@@ -48,7 +48,7 @@ async function handleSync(req, res) {
         stored = await saveTemporaryImage(imageBuffer, responseData);
     } catch (error) {
         logger.warn('[SYNC_APP_IMAGE]', `生成失败: ${fullAddress}`, error.message);
-        if (error.code === 'COS_CONFIG_MISSING') {
+        if (error.code === 'STORAGE_CONFIGURATION_ERROR') {
             return res.status(503).json({ status: 'error', message: error.message });
         }
 
@@ -64,7 +64,10 @@ async function handleSync(req, res) {
             });
         } catch (analyticsError) {
             logger.warn('[SYNC_APP_IMAGE]', `记录查询失败: ${fullAddress}`, analyticsError.message);
-            return res.status(500).json({ status: 'error', message: '记录查询失败' });
+            return res.status(analyticsError.code === 'STORAGE_CONFIGURATION_ERROR' ? 503 : 500).json({
+                status: 'error',
+                message: analyticsError.code === 'STORAGE_CONFIGURATION_ERROR' ? analyticsError.message : '记录查询失败'
+            });
         }
 
         return res.status(500).json({
@@ -86,7 +89,10 @@ async function handleSync(req, res) {
         });
     } catch (error) {
         logger.warn('[SYNC_APP_IMAGE]', `记录查询失败: ${fullAddress}`, error.message);
-        return res.status(500).json({ status: 'error', message: '记录查询失败' });
+        return res.status(error.code === 'STORAGE_CONFIGURATION_ERROR' ? 503 : 500).json({
+            status: 'error',
+            message: error.code === 'STORAGE_CONFIGURATION_ERROR' ? error.message : '记录查询失败'
+        });
     }
 
     const screenshotUrl = `${req.protocol}://${req.get('host')}/api/screenshot?file=${stored.file}`;
