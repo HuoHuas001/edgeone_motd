@@ -1,13 +1,13 @@
 {
   "javaDefaultPort": 25565,
   "bedrockDefaultPort": 19132,
-  "queryTimeout": 5000,
-  "serverPort": 3123,
+  "queryTimeout": 1000,
+  "serverPort": 80,
   "log_level": 2,
   "admins": [
     {
-      "username": "admin",
-      "password": "5f4dcc3b5aa765d61d8327deb882cf99"
+      "username": "hhs001",
+      "password": "motdHhs001"
     }
   ],
   "analytics": {
@@ -16,11 +16,12 @@
   "caching": {
     "enable": true,
     "ttl_seconds": 60,
-    "srv_ttl_seconds": 600
+    "srv_ttl_second": 600
   },
   "appImage": {
     "width": 700,
     "height": 389,
-    "ttlSeconds": 300
+    "ttlSeconds": 300,
+    "tempDir": "./data/appImage-temp"
   }
 }

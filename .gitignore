@@ -7,3 +7,9 @@ backend/data/
 .env.*
 !.env.example
 .edgeone/
+
+# Tencent Cloud EdgeOne
+.env
+.edgeone/*
+.tef_dist/*
+  

@@ -40,14 +40,14 @@
     },
     "footer": {
         "poweredBy": {
-            "name": "Gemini",
-            "url": "https://gemini.google.com/"
+            "name": "HuoHuas001",
+            "url": "https://github.com/HuoHuas001"
         },
         "company": {
-            "name": "Google",
-            "url": "https://google.com"
+            "name": "HuHoBot",
+            "url": "https://github.com/HuHoBot"
         },
-        "customHtml": "<a href=\"https://beian.miit.gov.cn/\" target=\"_blank\" rel=\"noopener noreferrer\">京ICP备xxxxxxxx号-x</a>"
+        "customHtml": "<meta name=\"msvalidate.01\" content=\"8B116F7DC4351FC0C8D5D79CB830AF18\" /><a href=\"https://www.cloudflare.com/\" target=\"_blank\" rel=\"noopener noreferrer\">Cloudflare 提供技术支持</a><span style=\"color: #999;user-select: none;padding: 0 0.2em;\">|</span><a href=\"https://beian.miit.gov.cn/\" target=\"_blank\" rel=\"noopener noreferrer\">桂ICP备2026016978号</a>"
     },
     "failureState": {
         "sloganApi": "https://v1.hitokoto.cn/?encode=text&charset=utf-8",
