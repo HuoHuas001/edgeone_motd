@@ -8,6 +8,7 @@
  */
 
 let storage;
+let storageFactory = createStorage;
 
 function storageEnabled() {
     return process.env.STORAGE_ENABLED !== 'false';
@@ -32,14 +33,19 @@ function configureStorage(adapter) {
     storage = adapter;
 }
 
+function configureStorageFactory(factory) {
+    storageFactory = factory;
+    storage = undefined;
+}
+
 function getStorage() {
     if (!storageEnabled()) {
         const error = new Error('Persistent storage is disabled by STORAGE_ENABLED=false');
         error.code = 'STORAGE_CONFIGURATION_ERROR';
         throw error;
     }
-    if (!storage) storage = createStorage();
+    if (!storage) storage = storageFactory();
     return storage;
 }
 
-module.exports = { configureStorage, createStorage, getStorage, storageEnabled };
+module.exports = { configureStorage, configureStorageFactory, createStorage, getStorage, storageEnabled };

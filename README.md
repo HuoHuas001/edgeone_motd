@@ -17,7 +17,7 @@
 
 `backend/storage/index.js` 定义统一接口：`getJSON`、`setJSON`、`getBytes`、`setBytes`、`delete`、`list({prefix,cursor})`。不存在的键返回 `null`；读写失败抛错；分页游标必须遍历到结束。业务层不引用平台 SDK，也不依赖 SQL、原子计数器、条件写或原生 TTL。
 
-`backend/storage/edgeoneBlob.js` 是当前唯一适配器，负责 SDK 调用、自动凭据、强一致读取、分页以及错误转换。平台入口可通过 `configureStorage(adapter)` 注入其他适配器；也可以在 `backend/storage/` 添加真实适配器并接入 `createStorage()`。缓存、统计和截图服务无需改写。未实现的平台名称会明确报错，不会悄悄回退到 EdgeOne。
+`backend/storage/edgeoneBlob.js` 是当前唯一适配器，负责强一致读取、分页以及错误转换。平台入口可通过 `configureStorage(adapter)` 或延迟创建的 `configureStorageFactory(factory)` 注入其他适配器。EdgeOne 云函数入口静态导入 Blob SDK，仅传命名空间，并把 SDK 构造器传给 CommonJS 适配器；SDK 必须参与函数打包，不能作为 external 依赖直接复制，否则会绕过部署凭据注入。缓存、统计和截图服务无需改写，未实现的平台名称会明确报错。
 
 **存储封装不等于运行时已经跨平台。** 当前 HTTP 入口仍为 EdgeOne Node 云函数；Cloudflare/ESA 的 Node 兼容、TCP/UDP 出站能力及入口格式还需分别移植和实测，尤其不能假定支持基岩版 UDP。
 

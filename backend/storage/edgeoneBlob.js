@@ -1,4 +1,3 @@
-const { getStore } = require('@edgeone/pages-blob');
 
 function storageError(error) {
     const normalized = new Error(`EdgeOne Blob: ${error.message}`, { cause: error });
@@ -7,11 +6,12 @@ function storageError(error) {
     return normalized;
 }
 
-function createEdgeOneBlobStorage({ name, projectId, token }) {
+function createEdgeOneBlobStorage({ name, projectId, token }, storeFactory) {
     let store;
     try {
         // On Pages, the SDK uses the deployment credential. Local access needs both fields.
-        store = projectId || token ? getStore({ name, projectId, token }) : getStore(name);
+        const factory = storeFactory || require('@edgeone/pages-blob').getStore;
+        store = factory({ name, consistency: 'strong', ...(projectId || token ? { projectId, token } : {}) });
     } catch (error) {
         throw storageError(error);
     }

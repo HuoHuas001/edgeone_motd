@@ -8,6 +8,6 @@
   "cloudFunctions": {
     "maxDuration": 60,
     "includeFiles": ["backend/**", "front/src/locales/*.json"],
-    "externalNodeModules": ["express", "cors", "varint", "@edgeone/pages-blob", "@napi-rs/canvas"]
+    "externalNodeModules": ["express", "cors", "varint", "@napi-rs/canvas"]
   }
 }
