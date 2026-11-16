@@ -1,0 +1,15 @@
+{
+  "name": "edgeone-motd",
+  "installCommand": "npm ci",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "nodeVersion": "22.11.0",
+  "rewrites": [{ "source": "/*", "destination": "/index.html" }],
+  "cloudFunctions": {
+    "nodejs": {
+      "maxDuration": 60,
+      "includeFiles": ["backend/**", "front/src/locales/*.json"],
+      "externalNodeModules": ["express", "cors", "varint", "@libsql/client", "@napi-rs/canvas", "cos-nodejs-sdk-v5"]
+    }
+  }
+}

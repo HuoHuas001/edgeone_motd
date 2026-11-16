@@ -1,0 +1,9 @@
+node_modules/
+front/node_modules/
+dist/
+backend/dist/
+backend/data/
+.env
+.env.*
+!.env.example
+.edgeone/

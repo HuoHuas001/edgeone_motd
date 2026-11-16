@@ -1,0 +1,26 @@
+{
+  "javaDefaultPort": 25565,
+  "bedrockDefaultPort": 19132,
+  "queryTimeout": 5000,
+  "serverPort": 3123,
+  "log_level": 2,
+  "admins": [
+    {
+      "username": "admin",
+      "password": "5f4dcc3b5aa765d61d8327deb882cf99"
+    }
+  ],
+  "analytics": {
+    "enable": true
+  },
+  "caching": {
+    "enable": true,
+    "ttl_seconds": 60,
+    "srv_ttl_seconds": 600
+  },
+  "appImage": {
+    "width": 700,
+    "height": 389,
+    "ttlSeconds": 300
+  }
+}
