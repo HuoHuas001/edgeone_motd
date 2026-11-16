@@ -73,6 +73,13 @@ https://你的域名/api/sync_app_img?host=你的服务器&stype=je
 
 前端配置修改 `backend/config/front.json`，图片模板修改 `backend/config/pic.json`，然后重新部署。原项目的 `/api/update` 未实现，本移植未把它描述为可用的配置保存功能。管理员默认密码仍禁止登录；MD5 登录协议沿用原项目，不等同于新增的安全认证系统。
 
+### 跨域访问（CORS）
+
+- 公开 API 使用 `Access-Control-Allow-Origin: *`，允许 GET/POST；OPTIONS 预检返回 204，允许 `Content-Type`、`Authorization`，预检缓存 86400 秒。不开放跨域凭据。
+- `/api/login`、`/api/admin/**` 和管理页预留的 `/api/update`（仍未实现）不开放 CORS；带非本站 `Origin`（包括 `null`）的请求与预检返回 403。同源及不带 `Origin` 的管理员请求保持原行为；`/api/config` 读取接口仍公开。
+- CORS 不等于鉴权：`/api/admin/stats` 当前没有后端管理员鉴权，curl 等不带 `Origin` 的客户端仍能请求该接口。
+
+
 ## 本地运行
 
 推荐 Node 24；构建工具兼容 EdgeOne 的 Node 22 构建环境。
@@ -90,7 +97,7 @@ npm start
 
 ## 验证记录与边界
 
-- 原有13个协议及统计边界测试通过；新增 `node --test test/cloud-proxy.test.mjs` 回归测试单独通过，验证截图返回公开 HTTPS 域名而非平台内部回源域名。
+- 原有13个协议及统计边界测试通过；本次 `node --test test/cors.test.mjs test/cloud-proxy.test.mjs` 通过7项，覆盖公开 GET/POST 与 PNG 的跨域响应、OPTIONS 预检、管理员跨域拒绝及代理后的同源判断，同时验证截图链接使用公开 HTTPS 域名。
 - `npm run build`：生产前端构建通过。
 - 本地真实 TCP/UDP 协议服务：完整 HTTP API 的 Java、Bedrock、auto 查询均返回 online；两类 PNG 返回有效图片。
 - 浏览器实际提交查询并显示服务器状态；中文 PNG 字体已人工检查。
