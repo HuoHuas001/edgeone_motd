@@ -13,6 +13,12 @@ const varint = require('varint');
 const { configureStorage } = require('../backend/storage');
 
 test('cloud screenshots use the public HTTPS origin instead of the internal gateway host', async t => {
+    const previousOrigin = process.env.PUBLIC_ORIGIN;
+    process.env.PUBLIC_ORIGIN = 'https://motd.example.test';
+    t.after(() => {
+        if (previousOrigin === undefined) delete process.env.PUBLIC_ORIGIN;
+        else process.env.PUBLIC_ORIGIN = previousOrigin;
+    });
     const root = await mkdtemp(join(tmpdir(), 'motd-proxy-test-'));
     t.after(() => rm(root, { recursive: true, force: true }));
     async function getBytes(key) {
@@ -49,7 +55,7 @@ test('cloud screenshots use the public HTTPS origin instead of the internal gate
     const base = `http://127.0.0.1:${server.address().port}`;
     const response = await fetch(`${base}/api/sync_app_img`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'eo-pages-host': 'motd.example.test' },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ host: `127.0.0.1:${minecraft.address().port}`, stype: 'je' })
     });
     assert.equal(response.status, 200);

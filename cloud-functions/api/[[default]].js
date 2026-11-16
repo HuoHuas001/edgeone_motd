@@ -11,10 +11,15 @@ configureStorageFactory(() => createEdgeOneBlobStorage({ name: process.env.STORA
 const api = require('../../backend/app.js');
 const app = express();
 app.use((req, res, next) => {
+  const configuredOrigin = req.context?.env?.PUBLIC_ORIGIN || process.env.PUBLIC_ORIGIN;
   const publicHost = req.get('eo-pages-host');
-  if (publicHost) {
+  if (configuredOrigin) {
+    const origin = new URL(configuredOrigin);
+    req.headers.host = origin.host;
+    req.headers['x-forwarded-proto'] = origin.protocol.slice(0, -1);
+  } else if (publicHost) {
     req.headers.host = publicHost;
-    req.headers['x-forwarded-proto'] ||= 'https';
+    req.headers['x-forwarded-proto'] = 'https';
   }
   next();
 });

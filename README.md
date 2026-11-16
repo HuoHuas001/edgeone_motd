@@ -38,6 +38,7 @@
 | 变量 | 用途 |
 | --- | --- |
 | `QUERY_TIMEOUT_MS` | 查询超时，默认 5000 毫秒 |
+| `PUBLIC_ORIGIN` | 可选公开站点地址，用于反向代理后的绝对截图链接；不是 Blob 凭据 |
 | `STORAGE_PROVIDER` | 当前为 `edgeone-blob`，默认值同此 |
 | `STORAGE_NAMESPACE` | Blob Store 名，默认 `mcmotd` |
 | `STORAGE_ENABLED` | 默认启用；显式设为 `false` 可只使用实时 MOTD 和即时图片 |
@@ -67,6 +68,8 @@ https://你的域名/api/sync_app_img?host=你的服务器&stype=je
 ```
 
 同步接口返回 `serverData`、`screenshotUrl`、`expireAt`；截图地址保持原来的 `/api/screenshot?file=…` 格式。同步接口也支持原 POST 请求。
+
+若平台没有转发公开 Host，配置 `PUBLIC_ORIGIN` 为站点的 HTTPS origin（不含预览授权参数）。平台入口优先从 `req.context.env` 读取该值，再规范化标准 Express 请求；存储仍只需要命名空间。更换自定义域名时同步更新此项。
 
 前端配置修改 `backend/config/front.json`，图片模板修改 `backend/config/pic.json`，然后重新部署。原项目的 `/api/update` 未实现，本移植未把它描述为可用的配置保存功能。管理员默认密码仍禁止登录；MD5 登录协议沿用原项目，不等同于新增的安全认证系统。
 
